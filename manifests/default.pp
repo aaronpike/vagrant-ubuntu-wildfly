@@ -2,7 +2,7 @@ class windfly-env{
 	include apt
 	include maven
 
-	$wildfly_url = "http://download.jboss.org/wildfly/8.1.0.CR2/wildfly-8.1.0.CR2.tar.gz"
+	$wildfly_url = "http://download.jboss.org/wildfly/8.2.0.Final/wildfly-8.2.0.Final.tar.gz"
 	
 	apt::ppa { "ppa:webupd8team/java": }
 
@@ -25,6 +25,11 @@ class windfly-env{
     		require => Exec["apt-get update"],
     		before => Apt::Ppa["ppa:webupd8team/java"],
 	}
+
+        package { ["mysql-server-5.6"]:
+        	ensure => present,
+	        require => Exec["apt-get update 2"],
+  	}
 
         package { ["oracle-java7-installer"]:
         	ensure => present,

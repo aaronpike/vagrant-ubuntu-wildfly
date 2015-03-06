@@ -1,13 +1,16 @@
 # -*- mode: ruby -*-
 # vi: set ft=ruby :
 
+box = 'utopic64'
+url = 'https://cloud-images.ubuntu.com/vagrant/utopic/current/utopic-server-cloudimg-amd64-vagrant-disk1.box'
+ram = '4096'
+
 Vagrant.configure("2") do |config|
 
-  config.vm.box = "precise64"
-  config.vm.box_url = "http://files.vagrantup.com/precise64.box"
-  config.vm.hostname = "windfly"
-  config.vm.network :forwarded_port, guest: 8080, host: 4040
-  config.vm.network :forwarded_port, guest: 9990, host: 9990
+  config.vm.box = box
+  config.vm.box_url = url
+  config.vm.hostname = "localhost"
+  config.vm.network "private_network", ip: "192.168.56.102"
 
 
   # Provider-specific configuration so you can fine-tune various backing
@@ -15,13 +18,11 @@ Vagrant.configure("2") do |config|
   config.vm.provider :virtualbox do |vb|
     # Use VBoxManage to customize the VM
     vb.customize ["modifyvm", :id,
-                  "--name", "windfly",
-                  "--memory", "1024"]
+                  "--name", "wildfly",
+                  "--memory", ram]
   end
 
-  config.vm.provision :shell, :inline => "echo \"America/Brazil\" | sudo tee /etc/timezone && dpkg-reconfigure --frontend noninteractive tzdata"
-
-  config.vbguest.auto_update = false
+  config.vm.provision :shell, :inline => "echo \"America/Denver\" | sudo tee /etc/timezone && dpkg-reconfigure --frontend noninteractive tzdata"
 
   config.vm.provision :puppet do |puppet|
 	puppet.manifests_path = "manifests"
